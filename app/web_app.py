@@ -9,6 +9,7 @@ from datetime import datetime
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import Dict, List, Optional
 from urllib.parse import parse_qs
 
 DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "shifts.json"
@@ -22,14 +23,14 @@ QUESTIONS = [
 ]
 
 
-def load_entries() -> list[dict[str, str]]:
+def load_entries() -> List[Dict[str, str]]:
     if not DATA_PATH.exists():
         return []
     with DATA_PATH.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
-def save_entries(entries: list[dict[str, str]]) -> None:
+def save_entries(entries: List[Dict[str, str]]) -> None:
     DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     with DATA_PATH.open("w", encoding="utf-8") as handle:
         json.dump(entries, handle, ensure_ascii=False, indent=2)
@@ -131,7 +132,7 @@ def page_layout(title: str, body: str) -> str:
 </html>"""
 
 
-def render_form(message: str | None = None) -> str:
+def render_form(message: Optional[str] = None) -> str:
     message_html = ""
     if message:
         message_html = f"<p>{html.escape(message)}</p>"
@@ -163,7 +164,7 @@ def render_form(message: str | None = None) -> str:
     return page_layout("Καταγραφή Υπηρεσιών", body)
 
 
-def render_list(entries: list[dict[str, str]]) -> str:
+def render_list(entries: List[Dict[str, str]]) -> str:
     if not entries:
         body = """
         <header>
